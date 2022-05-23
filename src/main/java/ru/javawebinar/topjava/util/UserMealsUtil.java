@@ -39,8 +39,7 @@ public class UserMealsUtil {
         }
         List<UserMealWithExcess> filteredMeals = new ArrayList<>();
         for (UserMeal meal : meals) {
-            if (meal.getDateTime().toLocalTime().toNanoOfDay() >= startTime.toNanoOfDay()
-                    && meal.getDateTime().toLocalTime().toNanoOfDay() <= endTime.toNanoOfDay()) {
+            if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
                 filteredMeals.add(new UserMealWithExcess(
                         meal.getDateTime(),
                         meal.getDescription(),
