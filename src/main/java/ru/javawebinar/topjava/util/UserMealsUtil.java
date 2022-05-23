@@ -34,10 +34,10 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> dayCaloriesMap = new HashMap<>();
-        List<UserMealWithExcess> filteredMeals = new ArrayList<>();
         for (UserMeal meal : meals) {
             dayCaloriesMap.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
         }
+        List<UserMealWithExcess> filteredMeals = new ArrayList<>();
         for (UserMeal meal : meals) {
             if (meal.getDateTime().toLocalTime().toNanoOfDay() >= startTime.toNanoOfDay()
                     && meal.getDateTime().toLocalTime().toNanoOfDay() <= endTime.toNanoOfDay()) {
@@ -53,15 +53,15 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> dayCaloriesMap = meals.stream()
-                .collect(Collectors.groupingBy(el -> el.getDateTime().toLocalDate(),
+                .collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(),
                         Collectors.summingInt(UserMeal::getCalories)));
+
         return meals.stream()
-                .filter(el -> el.getDateTime().toLocalTime().toNanoOfDay() >= startTime.toNanoOfDay()
-                        && el.getDateTime().toLocalTime().toNanoOfDay() <= endTime.toNanoOfDay())
-                .map(el -> new UserMealWithExcess(el.getDateTime(),
-                        el.getDescription(),
-                        el.getCalories(),
-                        dayCaloriesMap.get(el.getDateTime().toLocalDate()) > caloriesPerDay))
+                .filter(um -> TimeUtil.isBetweenHalfOpen(um.getDateTime().toLocalTime(), startTime, endTime))
+                .map(um -> new UserMealWithExcess(um.getDateTime(),
+                        um.getDescription(),
+                        um.getCalories(),
+                        dayCaloriesMap.get(um.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
