@@ -2,23 +2,23 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class MealDaoImpl implements MealDao{
+public class MealDaoMemory implements MealDao{
 
     private Map<Integer, Meal> storage;
 
-    private final AtomicInteger atomicInteger = new AtomicInteger();
-
-    public MealDaoImpl(Map<Integer, Meal> storage) {
-        this.storage = storage;
+    public MealDaoMemory() {
+        this.storage = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void add(Meal meal) {
+    public Meal add(Meal meal) {
         storage.put(meal.getId(), meal);
+        return getById(meal.getId());
     }
 
     @Override
@@ -27,8 +27,9 @@ public class MealDaoImpl implements MealDao{
     }
 
     @Override
-    public void update(Meal meal) {
+    public Meal update(Meal meal) {
         storage.putIfAbsent(meal.getId(), meal);
+        return getById(meal.getId());
     }
 
     @Override

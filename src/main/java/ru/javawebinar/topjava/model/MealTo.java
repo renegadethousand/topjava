@@ -6,13 +6,23 @@ import java.time.LocalTime;
 
 public class MealTo {
 
-    private final Integer id;
+    private final int id;
 
     private final LocalDateTime dateTime;
 
     private final String description;
 
     private final int calories;
+
+    private boolean excess;
+
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
+        this.excess = excess;
+    }
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -41,17 +51,8 @@ public class MealTo {
     //    private final AtomicBoolean excess;      // filteredByAtomic (or any ref type, e.g. boolean[1])
 //    private final Boolean excess;            // filteredByReflection
 //    private final Supplier<Boolean> excess;  // filteredByClosure
-    private boolean excess;
 
-    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
-        this.id = id;
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
-        this.excess = excess;
-    }
-
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 

@@ -22,7 +22,7 @@ import static ru.javawebinar.topjava.util.TimeUtil.isBetweenHalfOpen;
 
 public class MealsUtil {
 
-    public static final List<Meal> MEALS = Arrays.asList(
+    public static final List<Meal> meals = Arrays.asList(
             new Meal(1, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(2, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
             new Meal(3, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
@@ -33,7 +33,7 @@ public class MealsUtil {
     );
 
     public static void main(String[] args) throws InterruptedException {
-        List<Meal> meals = MEALS;
+        List<Meal> meals = MealsUtil.meals;
 
         final LocalTime startTime = LocalTime.of(7, 0);
         final LocalTime endTime = LocalTime.of(12, 0);
