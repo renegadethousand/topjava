@@ -1,22 +1,30 @@
 package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealDaoMemory implements MealDao{
+public class MealMemoryDao implements MealDao {
 
     private Map<Integer, Meal> storage;
 
-    public MealDaoMemory() {
+    private AtomicInteger idCount = new AtomicInteger(0);
+
+    public MealMemoryDao() {
         this.storage = new ConcurrentHashMap<>();
+        for (Meal meal : MealsUtil.meals) {
+            add(meal);
+        }
     }
 
     @Override
     public Meal add(Meal meal) {
+        meal.setId(idCount.getAndIncrement());
         storage.put(meal.getId(), meal);
         return getById(meal.getId());
     }
@@ -28,7 +36,7 @@ public class MealDaoMemory implements MealDao{
 
     @Override
     public Meal update(Meal meal) {
-        storage.putIfAbsent(meal.getId(), meal);
+        storage.put(meal.getId(), meal);
         return getById(meal.getId());
     }
 
@@ -38,7 +46,7 @@ public class MealDaoMemory implements MealDao{
     }
 
     @Override
-    public Meal getById(int mealId) {
-        return storage.get(mealId);
+    public Meal getById(int id) {
+        return storage.get(id);
     }
 }
