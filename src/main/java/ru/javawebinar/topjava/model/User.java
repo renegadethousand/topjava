@@ -85,11 +85,12 @@ public class User extends AbstractNamedEntity {
     public String toString() {
         return "User{" +
                 "email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", enabled=" + enabled +
                 ", registered=" + registered +
                 ", roles=" + roles +
                 ", caloriesPerDay=" + caloriesPerDay +
+                ", name='" + name + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

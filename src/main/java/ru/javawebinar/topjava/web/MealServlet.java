@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -26,12 +28,42 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController mealRestController;
 
+    private ConfigurableApplicationContext appCtx;
+
     @Override
     public void init() {
         repository = new InMemoryMealRepository();
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            mealRestController = appCtx.getBean(MealRestController.class);
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        mealRestController = appCtx.getBean(MealRestController.class);
+        SecurityUtil.setAuthUserId(1);
+        MealsUtil.meals.forEach(m -> mealRestController.update(m, 1));
+        SecurityUtil.setAuthUserId(2);
+        MealsUtil.mealsUser.forEach(m -> mealRestController.update(m, 2));
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
+    }
+
+    public LocalDate getDate(String date) {
+        LocalDate localDate = null;
+        try {
+            localDate = LocalDate.parse(date);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
         }
+        return localDate;
+    }
+
+    public LocalTime getTime(String time) {
+        LocalTime localTime = null;
+        try {
+            localTime = LocalTime.parse(time);
+        } catch (RuntimeException e) {
+            log.error(e.getMessage());
+        }
+        return localTime;
     }
 
     @Override
@@ -56,6 +88,10 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -73,10 +109,15 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
+            case "allFilter":
+                log.info("getAll");
+                request.setAttribute("meals", mealRestController.getAllFilter(getDate(startDate), getDate(endDate),
+                        getTime(startTime), getTime(endTime)));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

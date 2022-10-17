@@ -3,12 +3,12 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.AbstractNamedEntity;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -47,7 +47,8 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        List<User> users = repository.values().stream().sorted(Comparator.comparing(AbstractNamedEntity::getName))
+        List<User> users = repository.values().stream().sorted(Comparator.comparing(User::getName)
+                        .thenComparing(u -> u.getEmail().toLowerCase()))
                 .collect(Collectors.toList());
         log.info("getAll {}", users);
         return users;
@@ -56,11 +57,8 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        for (User user : repository.values()) {
-            if (email.equals(user.getEmail())) {
-                return user;
-            }
-        }
-        return null;
+        return repository.values().stream()
+                .filter(u -> email.equalsIgnoreCase(u.getEmail()))
+                .findFirst().orElse(null);
     }
 }

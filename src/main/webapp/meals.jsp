@@ -49,6 +49,15 @@
             </tr>
         </c:forEach>
     </table>
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="allFilter">
+        <p>From date:</p><input type="date" name="startDate" value="${startDate}">
+        <p>To date:</p><input type="date" name="endDate" value="${endDate}">
+        <p>From time (including):</p><input type="time" name="startTime" value="${startTime}">
+        <p>To time (excluding):</p><input type="time" name="endTime" value="${endTime}">
+        <button type="submit">Filter</button>
+        <button onclick="window.history.back()" type="button">Cancel</button>
+    </form>
 </section>
 </body>
 </html>
