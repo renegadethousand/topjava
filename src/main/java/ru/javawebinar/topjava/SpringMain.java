@@ -31,7 +31,6 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             SecurityUtil.setAuthUserId(user.getId());
             for (Meal meal : meals) {
-                meal.setUserId(user.getId());
                 mealRestController.update(meal, meal.getId());
             }
             SecurityUtil.setAuthUserId(user2.getId());

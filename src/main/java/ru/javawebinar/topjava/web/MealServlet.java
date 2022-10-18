@@ -24,15 +24,12 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private MealRepository repository;
-
     private MealRestController mealRestController;
 
     private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() {
-        repository = new InMemoryMealRepository();
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
         SecurityUtil.setAuthUserId(1);
@@ -46,24 +43,18 @@ public class MealServlet extends HttpServlet {
         appCtx.close();
     }
 
-    public LocalDate getDate(String date) {
-        LocalDate localDate = null;
-        try {
-            localDate = LocalDate.parse(date);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
+    private LocalDate getDate(String date) {
+        if (date == null || date.isEmpty()) {
+            return null;
         }
-        return localDate;
+        return LocalDate.parse(date);
     }
 
-    public LocalTime getTime(String time) {
-        LocalTime localTime = null;
-        try {
-            localTime = LocalTime.parse(time);
-        } catch (RuntimeException e) {
-            log.error(e.getMessage());
+    private LocalTime getTime(String time) {
+        if (time == null || time.isEmpty()) {
+            return null;
         }
-        return localTime;
+        return LocalTime.parse(time);
     }
 
     @Override
@@ -88,10 +79,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -109,17 +96,22 @@ public class MealServlet extends HttpServlet {
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "all":
-            case "allFilter":
                 log.info("getAll");
+                request.setAttribute("meals", mealRestController.getAll());
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            case "allFilter":
+                log.info("getAllFilter");
+                String startDate = request.getParameter("startDate");
+                String endDate = request.getParameter("endDate");
+                String startTime = request.getParameter("startTime");
+                String endTime = request.getParameter("endTime");
                 request.setAttribute("meals", mealRestController.getAllFilter(getDate(startDate), getDate(endDate),
                         getTime(startTime), getTime(endTime)));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             default:
-                log.info("getAll");
-                request.setAttribute("meals", mealRestController.getAll());
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-                break;
+                response.sendRedirect("meals");
         }
     }
 
