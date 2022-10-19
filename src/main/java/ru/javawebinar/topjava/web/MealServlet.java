@@ -33,9 +33,9 @@ public class MealServlet extends HttpServlet {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
         SecurityUtil.setAuthUserId(1);
-        MealsUtil.meals.forEach(m -> mealRestController.update(m, 1));
+        MealsUtil.meals.forEach(m -> mealRestController.save(m));
         SecurityUtil.setAuthUserId(2);
-        MealsUtil.mealsUser.forEach(m -> mealRestController.update(m, 2));
+        MealsUtil.mealsUser.forEach(m -> mealRestController.save(m));
     }
 
     @Override

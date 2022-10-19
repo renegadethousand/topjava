@@ -13,7 +13,7 @@ public class DateTimeUtil {
     }
 
     public static boolean isDateBetweenHalfOpen(LocalDate lt, LocalDate startDate, LocalDate endDate) {
-        return lt.compareTo(startDate) >= 0 && lt.compareTo(endDate) < 0;
+        return lt.compareTo(startDate) >= 0 && lt.compareTo(endDate) <= 0;
     }
 
     public static String toString(LocalDateTime ldt) {
