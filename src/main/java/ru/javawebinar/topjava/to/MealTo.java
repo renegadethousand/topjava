@@ -1,25 +1,28 @@
-package ru.javawebinar.topjava.model;
+package ru.javawebinar.topjava.to;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-public class Meal extends AbstractBaseEntity {
+public class MealTo {
+    private final Integer id;
+
     private final LocalDateTime dateTime;
 
     private final String description;
 
     private final int calories;
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
-        this(null, dateTime, description, calories);
-    }
+    private final boolean excess;
 
-    public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
-        super(id);
+    public MealTo(Integer id, LocalDateTime dateTime, String description, int calories, boolean excess) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+        this.excess = excess;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public LocalDateTime getDateTime() {
@@ -34,21 +37,18 @@ public class Meal extends AbstractBaseEntity {
         return calories;
     }
 
-    public LocalDate getDate() {
-        return dateTime.toLocalDate();
-    }
-
-    public LocalTime getTime() {
-        return dateTime.toLocalTime();
+    public boolean isExcess() {
+        return excess;
     }
 
     @Override
     public String toString() {
-        return "Meal{" +
+        return "MealTo{" +
                 "id=" + id +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
+                ", excess=" + excess +
                 '}';
     }
 }
