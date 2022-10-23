@@ -32,12 +32,12 @@ public class MealTestData {
             "Еда на граничное значение", 100);
 
     public static Meal getNew() {
-        return new Meal(LocalDateTime.parse("2020-01-30T15:00:00"), "Завтрак", 500);
+        return new Meal(LocalDateTime.of(2020, 1, 30, 15, 0, 0), "Завтрак", 500);
     }
 
     public static Meal getUpdated() {
         Meal updated = new Meal(meal1);
-        updated.setDateTime(LocalDateTime.parse("2020-01-31T15:00:00"));
+        updated.setDateTime(LocalDateTime.of(2020, 1, 31, 15, 0, 0));
         updated.setDescription("ужин");
         updated.setCalories(330);
         return updated;

@@ -21,7 +21,7 @@ public class DateTimeUtil {
     }
 
     public static LocalDateTime atStartOfNextDayOrMax(LocalDate localDate) {
-        return localDate != null ? localDate.atTime(LocalTime.of(23, 59, 59, 999)) : MAX_DATE;
+        return localDate != null ? localDate.plus(1, ChronoUnit.DAYS).atStartOfDay() : MAX_DATE;
     }
 
     public static String toString(LocalDateTime ldt) {

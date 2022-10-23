@@ -29,8 +29,6 @@ CREATE TABLE meals
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE INDEX date_time_index ON meals (date_time);
-
 CREATE TABLE user_roles
 (
     user_id INTEGER NOT NULL,

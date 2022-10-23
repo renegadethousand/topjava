@@ -12,14 +12,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.MealTestData.NOT_FOUND;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
@@ -67,7 +65,7 @@ public class MealServiceTest {
         List<Meal> all = service.getBetweenInclusive(
                 LocalDate.of(2020, 1, 30),
                 LocalDate.of(2020, 1, 30),
-                SecurityUtil.authUserId());
+                USER_ID);
         MealTestData.assertMatch(all, meal3, meal2, meal1);
     }
 
@@ -76,7 +74,7 @@ public class MealServiceTest {
         List<Meal> all = service.getBetweenInclusive(
                 null,
                 null,
-                SecurityUtil.authUserId());
+                USER_ID);
         MealTestData.assertMatch(all, meal4, meal3, meal2, meal1);
     }
 
