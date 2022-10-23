@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
@@ -49,8 +48,8 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories, " +
-                        "user_id=:user_id WHERE id=:id", map) == 0) {
+                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories " +
+                        " WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -69,12 +68,12 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? ORDER BY date_time", ROW_MAPPER, userId);
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query("SELECT * FROM meals WHERE user_id =? " +
-                "AND date_time BETWEEN ? AND ? ORDER BY date_time", ROW_MAPPER, userId, startDateTime, endDateTime);
+                "AND date_time BETWEEN ? AND ? ORDER BY date_time DESC", ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }
